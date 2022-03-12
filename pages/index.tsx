@@ -1,16 +1,15 @@
-import { io, Socket } from 'socket.io-client';
-import React, { useEffect } from 'react';
+import React from 'react';
 
+import Navbar from '../components/Navbar';
+import InputBox from '../components/InputBox';
 
 function Index() {
-    let socket: Socket;
-    useEffect(() => {
-        socket = io();
-        socket.on('now', data => console.log(data));
-    });
 
     return (
-        <h1>Hello World</h1>
+        <div className="bg-slate-200 h-screen">
+            <Navbar />
+            <InputBox />
+        </div>
     )
 }
 
