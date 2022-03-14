@@ -5,17 +5,17 @@ import { readdir, lstat, readFile } from 'fs/promises';
 
 import { ignoreList, includeExts, ext2Lang } from './config';
 
-export function cloneRepos(): Promise<string> {
+export function cloneRepos(username: string): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const octokit = new Octokit();
 		octokit.request('GET /users/{username}/repos', {"username": "AayushK47"}).then(async (res) => {
 			const repos = res.data.filter(repo => !repo.archived);
 			let i = 0;
-			exec('mkdir repos', () => {
+			exec(`mkdir ${username}`, () => {
 				for(const repo of repos) {
 					if(!repo.archived) {
 						console.log(`Cloning ${repo.name}`);
-						exec(`cd repos && git clone ${repo.clone_url}`, (error) => {
+						exec(`cd ${username} && git clone ${repo.clone_url}`, (error) => {
 							if (error) {
 								reject(`Error ${error}`);
 							}
@@ -34,19 +34,21 @@ export function cloneRepos(): Promise<string> {
 	});
 }
 
-export async function scanFiles(repoName: string): Promise<string[]> {
-  const root = resolve(join(__dirname, '..', 'repos', repoName));
+export async function scanFiles(username: string): Promise<string[]> {
+  const root = resolve(join(__dirname, '..', username));
   let dirs = await readdir(root);
-  dirs = dirs.filter(item => !ignoreList.includes(item));
   dirs = dirs.map(item => join(root, item));
   const files = [];
 
   while(dirs.length > 0) {
     const name = dirs.pop() || "";
     if(await (await lstat(name)).isDirectory()) {
-      let dir = await readdir(name);
-      dir = dir.map(item => join(name, item));
-      dir.forEach(item => dirs.push(item));
+		let temp = name.split('/');
+		if (!ignoreList.includes(temp[temp.length - 1])) {
+			let dir = await readdir(name);
+			dir = dir.map(item => join(name, item));
+			dir.forEach(item => dirs.push(item));
+		}
     } else {
       files.push(join(name));
     }
@@ -80,6 +82,10 @@ export async function fetchLoc(files: string[]): Promise<{ [key: string]: number
 			}
 		}
 	}
-	console.log(loc);
 	return loc;
+}
+
+export function removeRepos(username: string) {
+	const path = resolve(join(__dirname, '..', username));
+	exec(`rm -rf ${path}`);
 }

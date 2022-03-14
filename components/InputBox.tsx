@@ -19,8 +19,8 @@ function InputBox() {
         if(!data.valid) {
             setValidUsername(false);
         } else {
-            setValidUsername(false);
-            push('/stats');
+            setValidUsername(true);
+            push(`/stats/${username}`);
         }
         setLoading(false);
     }
