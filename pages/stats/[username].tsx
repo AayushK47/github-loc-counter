@@ -8,31 +8,42 @@ function Stats() {
     let socket: Socket;
     const router = useRouter();
     const [message, setMessage] = useState('Connecting to the socket...');
+    const data = {
+        "python": 2127,
+        "javascript": 4315,
+        "typescript": 384,
+        "dart": 322,
+        "C": 705
+    }
+
+    // useEffect(() => {
+    //     if (router.isReady) {
+    //         socket = io();
+    //         socket.on('connect', () => {
+    //             socket.emit('start', router.query.username);
+    //         });
+
+    //         socket.on('progress', (data) => {
+    //             setMessage(data);
+    //         });
+
+    //         socket.on('finish', (locData) => {
+    //             setMessage('Preparing the charts...');
+    //             console.log(locData);
+    //             socket.close();
+    //         });
+    //     }
+    // }, [router.isReady]);
 
     useEffect(() => {
-        if (router.isReady) {
-            socket = io();
-            socket.on('connect', () => {
-                socket.emit('start', router.query.username);
-            });
-
-            socket.on('progress', (data) => {
-                setMessage(data);
-            });
-
-            socket.on('finish', (locData) => {
-                setMessage('Preparing the charts...');
-                console.log(locData);
-                socket.close();
-            });
-        }
-    }, [router.isReady]);
+        
+    });
 
     return (
         <>
             <Navbar />
             <div className="bg-slate-200 h-screen">
-                <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+                {/* <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
                     <div className="grid place-items-center">
                         <svg className="animate-spin -ml-1 mr-3 h-10 w-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -40,6 +51,10 @@ function Stats() {
                         </svg>
                     </div>
                     <div>{message}</div>
+                </div> */}
+                <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+                    <svg class="chart"></svg>
+                    <div>{JSON.stringify(data, null, 2)}</div>
                 </div>
             </div>
         </>
